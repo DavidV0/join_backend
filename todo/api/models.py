@@ -26,8 +26,8 @@ class Todo(models.Model):
     category = models.CharField(max_length=50)
     prio = models.PositiveSmallIntegerField(default=1)
     status = models.CharField(max_length=40)
-    assigned_to = models.ManyToManyField(Contact)
-    subtasks = models.ManyToManyField(Subtask)
+    assigned_to = models.JSONField(blank=True, null=True)
+    subtasks = models.JSONField(blank=True, null=True)
     
     
     def __str__(self):
