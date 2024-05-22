@@ -12,28 +12,25 @@ class Contact(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name 
     
-class Subtask(models.Model):
-    description = models.CharField(max_length=200)
-    state = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return self.description
-
 class Todo(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
-    due_date = models.DateField((), default=datetime.date.today)
+    due_date = models.DateField(default=datetime.date.today)
     category = models.CharField(max_length=50)
     prio = models.PositiveSmallIntegerField(default=1)
     status = models.CharField(max_length=40)
     assigned_to = models.ManyToManyField(Contact, blank=True)
-    subtasks = models.ManyToManyField(Subtask, blank=True)
-    
     
     def __str__(self):
         return self.title
+
+class Subtask(models.Model):
+    description = models.CharField(max_length=200)
+    state = models.BooleanField(default=False)
+    parent_task = models.ForeignKey(Todo, related_name='subtasks', on_delete=models.CASCADE)
     
-    
+    def __str__(self):
+        return self.description
 
     
 
