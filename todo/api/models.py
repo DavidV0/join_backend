@@ -5,12 +5,12 @@ import datetime
 class Contact(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=70)
-    phone_number = models.IntegerField()
+    phone_number = models.CharField(max_length=15) 
     badge_color = models.CharField(max_length=20)
-    email = models.EmailField(max_length=70,blank=True,unique=True)
-    
+    email = models.EmailField(max_length=70, blank=True, unique=True)
+
     def __str__(self):
-        return self.first_name + " " + self.last_name 
+        return self.first_name + " " + self.last_name
     
 class Todo(models.Model):
     title = models.CharField(max_length=100)
@@ -27,7 +27,7 @@ class Todo(models.Model):
 class Subtask(models.Model):
     description = models.CharField(max_length=200)
     state = models.BooleanField(default=False)
-    parent_task = models.ForeignKey(Todo, related_name='subtasks', on_delete=models.CASCADE)
+    parent_task = models.ForeignKey(Todo, related_name='subtasks', null=True, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.description

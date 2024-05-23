@@ -1,9 +1,8 @@
 # kanban/views.py
 from rest_framework import generics
 from .models import Todo, Contact, Subtask
-from .serializers import TodoSerializer, ContactSerializer, SubtaskSerializer
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
+from .serializers import  TodoSerializer, ContactSerializer, SubtaskSerializer
+from rest_framework import status
 from rest_framework.response import Response
 
 class TodoList(generics.ListCreateAPIView):
@@ -17,6 +16,16 @@ class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
 class ContactList(generics.ListCreateAPIView):
     serializer_class = ContactSerializer
     queryset = Contact.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print("Request data:", request.data)
+            print("Errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ContactSerializer
@@ -35,14 +44,4 @@ class SubtaskDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubtaskSerializer
     queryset = Subtask.objects.all()
 
-class LoginView(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'email': user.email
-        })
+
