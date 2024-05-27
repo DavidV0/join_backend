@@ -1,6 +1,6 @@
+# kanban/models.py
 from django.db import models
 import datetime
-# Create your models here.
 
 class Contact(models.Model):
     first_name = models.CharField(max_length=50)
@@ -11,7 +11,7 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
-    
+
 class Todo(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=200)
@@ -20,7 +20,7 @@ class Todo(models.Model):
     prio = models.PositiveSmallIntegerField(default=1)
     status = models.CharField(max_length=40)
     assigned_to = models.ManyToManyField(Contact, blank=True)
-    
+
     def __str__(self):
         return self.title
 
@@ -28,10 +28,6 @@ class Subtask(models.Model):
     description = models.CharField(max_length=200)
     state = models.BooleanField(default=False)
     parent_task = models.ForeignKey(Todo, related_name='subtasks', null=True, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return self.description
-
-    
-
-    
